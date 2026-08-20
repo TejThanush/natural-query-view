@@ -31,6 +31,8 @@ type LiveStatus = "offline" | "connecting" | "connected" | "error";
 interface NocContextValue extends Persisted {
   liveStatus: LiveStatus;
   liveError: string | null;
+  lastSyncAt: string | null;
+  liveCount: number;
   addIncident: (incident: Incident) => void;
   updateIncident: (id: string, patch: Partial<Incident>) => void;
   injectRandomAlert: () => Incident;
