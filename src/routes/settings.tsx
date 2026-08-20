@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { CheckCircle2, PlugZap, RotateCcw, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/noc/app-shell";
