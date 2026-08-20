@@ -29,7 +29,16 @@ export const Route = createFileRoute("/settings")({
 });
 
 function SettingsPage() {
-  const { settings, setSettings, liveStatus, liveError, testConnection, resetDemo } = useNoc();
+  const {
+    settings,
+    setSettings,
+    liveStatus,
+    liveError,
+    lastSyncAt,
+    liveCount,
+    testConnection,
+    resetDemo,
+  } = useNoc();
 
   return (
     <AppShell>
