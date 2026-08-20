@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { deviceByHostname, seedIncidents, seedKnowledge } from "./noc-data";
+import { fetchLiveIncidents, mergeIncidents } from "./noc-live";
 import type { Incident, KnowledgeEntry, Settings, Severity } from "./noc-types";
 
 const STORAGE_KEY = "noc-bot-console-v1";
