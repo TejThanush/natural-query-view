@@ -405,6 +405,8 @@ export function NocProvider({ children }: { children: ReactNode }) {
       ...state,
       liveStatus,
       liveError,
+      lastSyncAt,
+      liveCount,
       addIncident,
       updateIncident,
       injectRandomAlert,
