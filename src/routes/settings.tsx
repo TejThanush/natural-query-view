@@ -113,7 +113,12 @@ function SettingsPage() {
           ) : null}
 
           <div className="mt-4 rounded-md border border-border bg-background/60 p-3">
-            <p className="label-caps">To enable live mode on the laptop</p>
+            <p className="label-caps">
+              To enable live mode on the laptop —{" "}
+              <Link to="/integration" className="text-primary underline-offset-2 hover:underline">
+                full step-by-step guide
+              </Link>
+            </p>
             <pre className="mt-2 overflow-x-auto font-mono text-[0.7rem] leading-relaxed text-muted-foreground">
 {`pip install flask-cors
 
