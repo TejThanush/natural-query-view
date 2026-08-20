@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Activity, BookOpen, LayoutDashboard, Radio, Settings, Zap } from "lucide-react";
+import { Activity, BookOpen, LayoutDashboard, Plug, Radio, Settings, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNoc } from "@/lib/noc-store";
 import { Pill } from "./severity";
