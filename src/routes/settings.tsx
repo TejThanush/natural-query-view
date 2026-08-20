@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { CheckCircle2, PlugZap, RotateCcw, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/noc/app-shell";
@@ -29,7 +29,16 @@ export const Route = createFileRoute("/settings")({
 });
 
 function SettingsPage() {
-  const { settings, setSettings, liveStatus, liveError, testConnection, resetDemo } = useNoc();
+  const {
+    settings,
+    setSettings,
+    liveStatus,
+    liveError,
+    lastSyncAt,
+    liveCount,
+    testConnection,
+    resetDemo,
+  } = useNoc();
 
   return (
     <AppShell>
@@ -90,7 +99,10 @@ function SettingsPage() {
           {liveStatus === "connected" ? (
             <p className="mt-3 flex items-start gap-2 text-xs text-success">
               <CheckCircle2 className="mt-0.5 size-3.5 shrink-0" />
-              Reached the bot at {settings.botUrl}.
+              Reached the bot at {settings.botUrl}
+              {lastSyncAt
+                ? ` — ${liveCount} live incident${liveCount === 1 ? "" : "s"} synced at ${new Date(lastSyncAt).toLocaleTimeString()}.`
+                : "."}
             </p>
           ) : null}
           {liveError ? (
@@ -101,7 +113,12 @@ function SettingsPage() {
           ) : null}
 
           <div className="mt-4 rounded-md border border-border bg-background/60 p-3">
-            <p className="label-caps">To enable live mode on the laptop</p>
+            <p className="label-caps">
+              To enable live mode on the laptop —{" "}
+              <Link to="/integration" className="text-primary underline-offset-2 hover:underline">
+                full step-by-step guide
+              </Link>
+            </p>
             <pre className="mt-2 overflow-x-auto font-mono text-[0.7rem] leading-relaxed text-muted-foreground">
 {`pip install flask-cors
 

@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { deviceByHostname, seedIncidents, seedKnowledge } from "./noc-data";
+import { fetchLiveIncidents, mergeIncidents } from "./noc-live";
 import type { Incident, KnowledgeEntry, Settings, Severity } from "./noc-types";
 
 const STORAGE_KEY = "noc-bot-console-v1";
@@ -30,6 +31,8 @@ type LiveStatus = "offline" | "connecting" | "connected" | "error";
 interface NocContextValue extends Persisted {
   liveStatus: LiveStatus;
   liveError: string | null;
+  lastSyncAt: string | null;
+  liveCount: number;
   addIncident: (incident: Incident) => void;
   updateIncident: (id: string, patch: Partial<Incident>) => void;
   injectRandomAlert: () => Incident;
@@ -180,6 +183,8 @@ export function NocProvider({ children }: { children: ReactNode }) {
   }));
   const [liveStatus, setLiveStatus] = useState<LiveStatus>("offline");
   const [liveError, setLiveError] = useState<string | null>(null);
+  const [lastSyncAt, setLastSyncAt] = useState<string | null>(null);
+  const [liveCount, setLiveCount] = useState(0);
   const hydrated = useRef(false);
   const seq = useRef(0);
 
@@ -192,6 +197,47 @@ export function NocProvider({ children }: { children: ReactNode }) {
     if (!hydrated.current) return;
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state]);
+
+  // Live mode: poll the local Python bot's incident feed every 5s. Failures are
+  // surfaced as a status pill only — the console keeps rendering whatever it
+  // already has, so a flaky laptop connection never breaks the demo flow.
+  const botUrl = state.settings.botUrl;
+  const liveMode = state.settings.liveMode;
+  useEffect(() => {
+    if (!liveMode) {
+      setLiveStatus("offline");
+      setLiveError(null);
+      return;
+    }
+    let cancelled = false;
+    const controller = new AbortController();
+    setLiveStatus("connecting");
+
+    const tick = async () => {
+      const { incidents, error } = await fetchLiveIncidents(botUrl, controller.signal);
+      if (cancelled) return;
+      if (error) {
+        setLiveStatus("error");
+        setLiveError(error);
+        return;
+      }
+      setLiveStatus("connected");
+      setLiveError(null);
+      setLastSyncAt(new Date().toISOString());
+      setLiveCount(incidents.length);
+      if (incidents.length) {
+        setState((s) => ({ ...s, incidents: mergeIncidents(s.incidents, incidents) }));
+      }
+    };
+
+    void tick();
+    const timer = window.setInterval(() => void tick(), 5000);
+    return () => {
+      cancelled = true;
+      controller.abort();
+      window.clearInterval(timer);
+    };
+  }, [liveMode, botUrl]);
 
   const updateIncident = useCallback((id: string, patch: Partial<Incident>) => {
     setState((s) => ({
@@ -359,6 +405,8 @@ export function NocProvider({ children }: { children: ReactNode }) {
       ...state,
       liveStatus,
       liveError,
+      lastSyncAt,
+      liveCount,
       addIncident,
       updateIncident,
       injectRandomAlert,
@@ -375,6 +423,8 @@ export function NocProvider({ children }: { children: ReactNode }) {
       state,
       liveStatus,
       liveError,
+      lastSyncAt,
+      liveCount,
       addIncident,
       updateIncident,
       injectRandomAlert,

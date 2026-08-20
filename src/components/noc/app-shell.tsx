@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Activity, BookOpen, LayoutDashboard, Radio, Settings, Zap } from "lucide-react";
+import { Activity, BookOpen, LayoutDashboard, Plug, Radio, Settings, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNoc } from "@/lib/noc-store";
 import { Pill } from "./severity";
@@ -9,6 +9,7 @@ const nav = [
   { to: "/", label: "Overview", icon: LayoutDashboard },
   { to: "/incidents", label: "Incidents", icon: Activity },
   { to: "/knowledge", label: "Knowledge", icon: BookOpen },
+  { to: "/integration", label: "Integration", icon: Plug },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 

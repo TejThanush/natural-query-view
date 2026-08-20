@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as IntegrationRouteImport } from './routes/integration'
 import { Route as KnowledgeRouteImport } from './routes/knowledge'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as IncidentsIndexRouteImport } from './routes/incidents.index'
@@ -18,6 +19,11 @@ import { Route as IncidentsIdRouteImport } from './routes/incidents.$id'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntegrationRoute = IntegrationRouteImport.update({
+  id: '/integration',
+  path: '/integration',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KnowledgeRoute = KnowledgeRouteImport.update({
@@ -43,6 +49,7 @@ const IncidentsIdRoute = IncidentsIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/integration': typeof IntegrationRoute
   '/knowledge': typeof KnowledgeRoute
   '/settings': typeof SettingsRoute
   '/incidents/$id': typeof IncidentsIdRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/integration': typeof IntegrationRoute
   '/knowledge': typeof KnowledgeRoute
   '/settings': typeof SettingsRoute
   '/incidents/$id': typeof IncidentsIdRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/integration': typeof IntegrationRoute
   '/knowledge': typeof KnowledgeRoute
   '/settings': typeof SettingsRoute
   '/incidents/$id': typeof IncidentsIdRoute
@@ -65,12 +74,25 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/knowledge' | '/settings' | '/incidents/$id' | '/incidents/'
+  fullPaths:
+    | '/'
+    | '/integration'
+    | '/knowledge'
+    | '/settings'
+    | '/incidents/$id'
+    | '/incidents/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/knowledge' | '/settings' | '/incidents/$id' | '/incidents'
+  to:
+    | '/'
+    | '/integration'
+    | '/knowledge'
+    | '/settings'
+    | '/incidents/$id'
+    | '/incidents'
   id:
     | '__root__'
     | '/'
+    | '/integration'
     | '/knowledge'
     | '/settings'
     | '/incidents/$id'
@@ -79,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  IntegrationRoute: typeof IntegrationRoute
   KnowledgeRoute: typeof KnowledgeRoute
   SettingsRoute: typeof SettingsRoute
   IncidentsIdRoute: typeof IncidentsIdRoute
@@ -92,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/integration': {
+      id: '/integration'
+      path: '/integration'
+      fullPath: '/integration'
+      preLoaderRoute: typeof IntegrationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/knowledge': {
@@ -127,6 +157,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  IntegrationRoute: IntegrationRoute,
   KnowledgeRoute: KnowledgeRoute,
   SettingsRoute: SettingsRoute,
   IncidentsIdRoute: IncidentsIdRoute,
